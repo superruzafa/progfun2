@@ -1,0 +1,10 @@
+[0m[[0minfo[0m] [0mUpdating {file:/Users/TristanO/Desktop/EPFL/Assistanat/ParallelAndReac/reactive/target/suggestions/project/}suggestions-build...[0m
+[0m[[0mdebug[0m] [0m:: resolving dependencies :: default#suggestions-build;0.1-SNAPSHOT[0m
+[0m[[0mdebug[0m] [0m	confs: [compile, runtime, test, provided, optional, compile-internal, runtime-internal, test-internal, plugin, sources, docs, pom, scala-tool][0m
+[0m[[0mdebug[0m] [0m	validate = true[0m
+[0m[[0mdebug[0m] [0m	refresh = false[0m
+[0m[[0mdebug[0m] [0mresolving dependencies for configuration 'compile'[0m
+[0m[[0mdebug[0m] [0m== resolving dependencies for default#suggestions-build;0.1-SNAPSHOT [compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#suggestions-build;0.1-SNAPSHOT->ch.epfl.lamp#sbt-coursera;0.5 [compile->default(compile)][0m
+[0m[[0minfo[0m] [0mResolving ch.epfl.lamp#sbt-coursera;0.5 ...[0m
+[0m[[0mdebug[0m] [0msbt-chain: Checking cache for: dependency: ch.epfl.lamp#sbt-coursera;0.5 {compile=[default(compile)]}[0m
