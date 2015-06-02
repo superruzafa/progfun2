@@ -1,19 +1,20 @@
 package kvstore
 
-import akka.actor.{ OneForOneStrategy, Props, ActorRef, Actor }
+import akka.actor._
 import kvstore.Arbiter._
-import scala.collection.immutable.Queue
-import akka.actor.SupervisorStrategy.Restart
-import scala.annotation.tailrec
-import akka.pattern.{ ask, pipe }
-import akka.actor.Terminated
 import scala.concurrent.duration._
-import akka.actor.PoisonPill
-import akka.actor.OneForOneStrategy
-import akka.actor.SupervisorStrategy
-import akka.util.Timeout
+import scala.language.postfixOps
+import kvstore.Replica._
+import kvstore.Replica.Remove
+import kvstore.Persistence.Persist
+import kvstore.Replicator.{Replicate, Snapshot, SnapshotAck}
+import kvstore.Replica.Get
+import kvstore.Replica.GetResult
+import kvstore.Replica.Insert
 
 object Replica {
+  val PersistDuration: Duration = 1 second
+
   sealed trait Operation {
     def key: String
     def id: Long
@@ -31,36 +32,15 @@ object Replica {
 }
 
 class Replica(val arbiter: ActorRef, persistenceProps: Props) extends Actor {
-  import Replica._
-  import Replicator._
-  import Persistence._
-  import context.dispatcher
 
-  /*
-   * The contents of this actor is just a suggestion, you can implement it in any way you like.
-   */
-  
-  var kv = Map.empty[String, String]
-  // a map from secondary replicas to replicators
-  var secondaries = Map.empty[ActorRef, ActorRef]
-  // the current set of replicators
-  var replicators = Set.empty[ActorRef]
-
+  arbiter ! Join
 
   def receive = {
-    case JoinedPrimary   => context.become(leader)
-    case JoinedSecondary => context.become(replica)
+    case JoinedPrimary   => context.become(subContracted(context.actorOf(Props(new PrimaryReplica(persistenceProps)))))
+    case JoinedSecondary => context.become(subContracted(context.actorOf(Props(new SecondaryReplica(persistenceProps)))))
   }
 
-  /* TODO Behavior for  the leader role. */
-  val leader: Receive = {
-    case _ =>
+  def subContracted(subContractor: ActorRef): Receive = {
+    case m => subContractor forward m
   }
-
-  /* TODO Behavior for the replica role. */
-  val replica: Receive = {
-    case _ =>
-  }
-
 }
-
